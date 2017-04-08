@@ -1,14 +1,10 @@
-const fs = require('mz').fs,
+const fs = require('fs'),
   yaml = require('js-yaml'),
   path = require('path'),
-  configFilename = path.join(__dirname, '..', 'config.yaml');
+  configFilename = path.join(__dirname, '..', '..', 'config.yaml');
 
-let config;
-
-async function loadConfig () {
-  let configFile = await fs.readFile(configFilename, 'utf8');
-  config = yaml.safeLoad(configFile);
-}
+let configFile = fs.readFileSync(configFilename, 'utf8');
+let config = yaml.safeLoad(configFile);
 
 /**
  * Gets a given config value.
@@ -16,11 +12,7 @@ async function loadConfig () {
  * @param {...string} path - The property path to the desired value(s).
  * @returns {any} - The config value at the path, or `undefined` if not found.
  */
-module.exports.get = async function get (...path) {
-  if (!config) {
-    await loadConfig();
-  }
-
+module.exports.get = function get (...path) {
   let result = config;
   for (let part of path) {
     result = result[part];

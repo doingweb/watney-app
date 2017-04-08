@@ -1,10 +1,9 @@
-const { getRawNodeHueApi, getConfig } = require('../../src/hue'),
+const api = require('../../src/hue').rawNodeHueApi,
   awaitableWrap = require('../../src/hue/awaitableWrap');
 
 printAll();
 
 async function printAll () {
-  let api = await getRawNodeHueApi();
   let lights = await awaitableWrap(api.lights());
   let groups = await awaitableWrap(api.groups());
 

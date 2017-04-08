@@ -5,73 +5,64 @@ const { HueApi, lightState, lights, groups } = require('node-hue-api'),
 const onState = lightState.create().on(),
   offState = lightState.create().off();
 
-let config, api;
+let config = getGlobalConfig('hue'),
+  { host, username } = config,
+  api = new HueApi(host, username);
 
-async function loadConfig () {
-  config = await getGlobalConfig('hue');
-}
-
-async function getConfig () {
-  if (!config) {
-    await loadConfig();
-  }
-
-  return config;
-}
-
-async function getApi () {
-  if (!api) {
-    let { host, username } = await getConfig();
-    api = new HueApi(host, username);
-  }
-
-  return api;
-}
-
-module.exports.getRawNodeHueApi = getApi;
-module.exports.getConfig = getConfig;
+module.exports.rawNodeHueApi = api;
+module.exports.config = config;
 
 module.exports.getLights = async function getLights () {
-  return { lights } = await getConfig();
+  return { lights } = config;
 };
 
 module.exports.getLightGroups = async function getLightGroups () {
-  return { lightGroups } = await getConfig();
+  return { lightGroups } = config;
 };
 
-module.exports.lightOn = async function lightOn (lightId, brightness) {
-  await setLightState(lightId, getOnStateWithBrightness(brightness));
+module.exports.lightOn = async function lightOn (lightId, brightness, transitionSeconds) {
+  await setLightState(lightId, getOnState(brightness, transitionSeconds));
 };
 
-module.exports.lightOff = async function lightOff(lightId) {
-  await setLightState(lightId, offState);
+module.exports.lightOff = async function lightOff(lightId, transitionSeconds) {
+  await setLightState(lightId, getOffState(transitionSeconds));
 };
 
-module.exports.lightGroupOn = async function lightGroupOn (groupId, brightness) {
-  await setLightGroupState(groupId, getOnStateWithBrightness(brightness));
+module.exports.lightGroupOn = async function lightGroupOn (groupId, brightness, transitionSeconds) {
+  await setLightGroupState(groupId, getOnState(brightness, transitionSeconds));
 };
 
-module.exports.lightGroupOff = async function lightGroupOff(groupId) {
-  await setLightGroupState(groupId, offState);
+module.exports.lightGroupOff = async function lightGroupOff(groupId, transitionSeconds) {
+  await setLightGroupState(groupId, getOffState(transitionSeconds));
 };
 
 async function setLightState (lightId, state) {
-  let api = await getApi();
-
   await awaitableWrap(api.setLightState(lightId, state));
 }
 
 async function setLightGroupState (groupId, state) {
-  let api = await getApi();
-
   await awaitableWrap(api.setGroupLightState(groupId, state));
 }
 
-function getOnStateWithBrightness (brightness) {
+function getOnState (brightness, transitionSeconds) {
   let state = onState;
 
   if (brightness !== undefined) {
-    state = state.bri(brightness);
+    state = state.bri(brightness * 255);
+  }
+
+  if (transitionSeconds !== undefined) {
+    state = state.transitiontime(transitionSeconds * 10);
+  }
+
+  return state;
+}
+
+function getOffState (transitionSeconds) {
+  let state = onState;
+
+  if (transitionSeconds !== undefined) {
+    state = state.transitiontime(transitionSeconds * 10);
   }
 
   return state;

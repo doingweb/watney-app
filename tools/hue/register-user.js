@@ -1,5 +1,5 @@
 const { HueApi } = require('node-hue-api'),
-  { getConfig } = require('../../src/hue'),
+  { host, userDescription } = require('../../src/hue').config,
   awaitableWrap = require('../../src/hue/awaitableWrap'),
   { sleep } = require('../../src/util');
 
@@ -8,8 +8,6 @@ let api = new HueApi();
 registerUser();
 
 async function registerUser () {
-  let { host, userDescription } = await getConfig();
-
   console.log('Press the link button on the thing...');
 
   let retriesLeft = 6;
