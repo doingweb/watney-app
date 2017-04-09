@@ -12,12 +12,12 @@ let config = getGlobalConfig('hue'),
 module.exports.rawNodeHueApi = api;
 module.exports.config = config;
 
-module.exports.getLights = async function getLights () {
-  return { lights } = config;
+module.exports.getLights = function getLights () {
+  return config.lights;
 };
 
-module.exports.getLightGroups = async function getLightGroups () {
-  return { lightGroups } = config;
+module.exports.getLightGroups = function getLightGroups () {
+  return config.lightGroups;
 };
 
 module.exports.lightOn = async function lightOn (lightId, brightness, transitionSeconds) {
