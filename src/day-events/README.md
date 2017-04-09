@@ -3,6 +3,17 @@ Day Events
 
 `EventEmitter` and calculator for daily events like sunrise, sunset, dawn, dusk, etc.
 
+Configuration
+-------------
+
+Latitude and longitude must be configured in the `config.yaml`:
+
+```yaml
+location:
+  latitude: 45.5231
+  longitude: -122.6765
+```
+
 Events
 ------
 
