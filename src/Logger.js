@@ -3,7 +3,7 @@ module.exports = class Logger {
     this.sourceName = sourceName;
   }
 
-  log (message) {
-    console.log(`${this.sourceName} > ${message}`);
+  log () {
+    console.log(this.sourceName, '→', ...arguments);
   }
 };
