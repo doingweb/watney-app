@@ -1,5 +1,5 @@
 const { HueApi, lightState, lights, groups } = require('node-hue-api'),
-  Logger = require('../logger'),
+  Logger = require('../Logger'),
   logger = new Logger('hue'),
   awaitableWrap = require('./awaitableWrap'),
   getGlobalConfig = require('../config').get;
