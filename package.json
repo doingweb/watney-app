@@ -9,11 +9,14 @@
   "author": "Chris Antes",
   "license": "ISC",
   "dependencies": {
+    "eventsource": "^1.0.0",
     "js-yaml": "^3.8.2",
     "moment": "^2.18.1",
     "mz": "^2.6.0",
     "node-hue-api": "^2.4.2",
     "node-schedule": "^1.2.1",
+    "request": "^2.81.0",
+    "request-promise-native": "^1.0.3",
     "suncalc": "^1.8.0"
   }
 }
