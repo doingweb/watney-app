@@ -17,32 +17,20 @@ location:
 Events
 ------
 
-The names for these times [come from the SunCalc library](https://github.com/mourner/suncalc#sunlight-times).
+The `emitter` will emit events as they happen, in real time. The events [come from the SunCalc library](https://github.com/mourner/suncalc#sunlight-times) and documented constants are included with the plugin.
 
-* `nightEnd`
-* `nauticalDawn`
-* `dawn`
-* `sunrise`
-* `sunriseEnd`
-* `goldenHourEnd`
-* `solarNoon`
-* `goldenHour`
-* `sunsetStart`
-* `sunset`
-* `dusk`
-* `nauticalDusk`
-* `night`
-* `nadir`
+The exact times of the events for the current day can be retrieved using the `getTimes()` method.
 
 Example
 -------
 
 ```js
-const { emitter, getTimes } = require('../src/day-events');
+const { emitter, getTimes } = require('../src/day-events'),
+  { SUNSET, SUNRISE } = require('../src/day-events/event-names');
 
-emitter.on('sunrise', () => console.log('Good morning!'));
-emitter.on('sunset', () => console.log('Good evening!'));
+emitter.on(SUNRISE, () => console.log('Good morning!'));
+emitter.on(SUNSET, () => console.log('Good evening!'));
 
 let eventTimes = getTimes();
-console.log('Sunset is at', eventTimes['sunset'].toString());
+console.log('Sunset is at', eventTimes[SUNSET].toString());
 ```
