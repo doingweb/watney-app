@@ -25,8 +25,11 @@ Example
 -------
 
 ```js
-const { emitter, getTimes } = require('../src/day-events'),
-  { SUNSET, SUNRISE } = require('../src/day-events/event-names');
+const {
+  emitter,
+  getTimes,
+  eventNames: { SUNSET, SUNRISE }
+} = require('../src/day-events');
 
 emitter.on(SUNRISE, () => console.log('Good morning!'));
 emitter.on(SUNSET, () => console.log('Good evening!'));

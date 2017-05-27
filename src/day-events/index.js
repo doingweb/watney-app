@@ -5,25 +5,22 @@ const EventEmitter = require('events'),
   config = require('../config');
 
 let location = config.get('location'),
-  emitter = new EventEmitter(),
-  todaysEventJobs;
+  emitter = new EventEmitter();
 
 module.exports.emitter = emitter;
 module.exports.getTimes = getTimes;
+module.exports.eventNames = require('./event-names');
 
 scheduleTodaysEvents();
 scheduleJob(getJobName('scheduleEventJobs'), '0 0 0 * * *', scheduleTodaysEvents);
 
 function scheduleTodaysEvents () {
-  todaysEventJobs = {};
-
   let eventTimes = getTimes();
 
   for (let eventName in eventTimes) {
-    let eventTime = eventTimes[eventName];
-    todaysEventJobs[eventName] = scheduleJob(
+    scheduleJob(
       getEventJobName(eventName),
-      eventTime,
+      eventTimes[eventName],
       () => emitter.emit(eventName)
     );
   }
