@@ -1,5 +1,5 @@
-const api = require('../../src/hue').rawNodeHueApi,
-  awaitableWrap = require('../../src/hue/awaitableWrap');
+const api = require('../lib/api'),
+  awaitableWrap = require('../lib/awaitableWrap');
 
 printAll();
 

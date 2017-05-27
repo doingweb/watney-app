@@ -1,9 +1,7 @@
-const { HueApi } = require('node-hue-api'),
-  { host, userDescription } = require('../../src/hue').config,
-  awaitableWrap = require('../../src/hue/awaitableWrap'),
-  { sleep } = require('../../src/util');
-
-let api = new HueApi();
+const api = require('../lib/api'),
+  { host, userDescription } = require('../../config').get('hue'),
+  awaitableWrap = require('../lib/awaitableWrap'),
+  { sleep } = require('../../util');
 
 registerUser();
 
