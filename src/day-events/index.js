@@ -2,9 +2,8 @@ const EventEmitter = require('events'),
   { scheduleJob } = require('node-schedule'),
   moment = require('moment'),
   SunCalc = require('suncalc'),
-  config = require('../config');
-
-let location = config.get('location'),
+  config = require('../config'),
+  location = config.get('location'),
   emitter = new EventEmitter();
 
 module.exports.emitter = emitter;
@@ -26,6 +25,11 @@ function scheduleTodaysEvents () {
   }
 }
 
+/**
+ * Get today's day event times.
+ *
+ * @returns {Object} The day events, mapping event names to times.
+ */
 function getTimes () {
   // Use today's noon, since just after midnight may still return yesterday's dates.
   // See https://github.com/mourner/suncalc/issues/11
