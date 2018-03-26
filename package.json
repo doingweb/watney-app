@@ -1,8 +1,8 @@
 {
-  "name": "watney",
+  "name": "watney-app",
   "version": "1.0.0",
   "description": "DIY home automation for the JavaScript enthusiast.",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
     "lint": "eslint --ignore-path .gitignore **/*.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,13 +10,13 @@
   "author": "Chris Antes",
   "license": "ISC",
   "dependencies": {
+    "config": "^1.30.0",
     "eventsource": "^1.0.0",
-    "js-yaml": "^3.8.2",
+    "js-yaml": "^3.11.0",
     "moment": "^2.18.1",
-    "mz": "^2.6.0",
-    "node-hue-api": "^2.4.2",
     "node-schedule": "^1.2.1",
     "request": "^2.81.0",
+    "request-promise-native": "^1.0.3"
   },
   "devDependencies": {
     "eslint": "^4.19.1",
