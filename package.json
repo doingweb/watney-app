@@ -10,7 +10,7 @@
   "author": "Chris Antes",
   "license": "ISC",
   "bin": {
-    "watney": "./bin/watney.js"
+    "watney-cli": "./bin/watney-cli.js"
   },
   "dependencies": {
     "config": "^1.30.0",
