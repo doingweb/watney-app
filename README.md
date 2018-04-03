@@ -131,7 +131,14 @@ module.exports = new WatneyApp({
 
 ### Configuring plugins
 
-The configuration for plugins is handled by the [node-config](https://github.com/lorenwest/node-config) system.
+The configuration for plugins is handled by the [node-config](https://github.com/lorenwest/node-config) system. So for example, you might have a `config/local.yaml` file:
+
+```yaml
+example:
+  fruit: banana
+```
+
+This configures the `example` plugin to have a setting `fruit` with value `banana`. The config object for each plugin is passed to it during object construction.
 
 ### Building a Plugin
 
