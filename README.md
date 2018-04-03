@@ -46,8 +46,8 @@ $ npm start
 
 [watney-app] It's good to be home.
 [watney-app] Starting up!
-[watney-app] Initializing plugins.
-[watney-app] Running scripts.
+[watney-app] No plugins configured.
+[watney-app] No scripts configured. Exiting.
 $
 ```
 
@@ -98,7 +98,7 @@ $ npm start
 
 [watney-app] It's good to be home.
 [watney-app] Starting up!
-[watney-app] Initializing plugins.
+[watney-app] No plugins configured.
 [watney-app] Running scripts.
 [example-script] Our script is running. How cool!
 $
