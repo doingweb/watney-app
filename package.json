@@ -7,8 +7,16 @@
     "lint": "eslint --ignore-path .gitignore **/*.js",
     "test": "jest"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/doingweb/watney-app.git"
+  },
   "author": "Chris Antes",
-  "license": "ISC",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/doingweb/watney-app/issues"
+  },
+  "homepage": "https://github.com/doingweb/watney-app#readme",
   "bin": {
     "watney-cli": "./bin/watney-cli.js"
   },
