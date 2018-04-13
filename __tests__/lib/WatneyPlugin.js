@@ -1,3 +1,5 @@
+const { EventEmitter } = require('events');
+
 const Logger = require('../../lib/Logger');
 const WatneyPlugin = require('../../lib/WatneyPlugin');
 
@@ -15,6 +17,10 @@ describe('when constructing', () => {
 
   beforeEach(() => {
     plugin = new WatneyPlugin(config);
+  });
+
+  it('should be an EventEmitter', () => {
+    expect(plugin).toBeInstanceOf(EventEmitter);
   });
 
   it('should save the config', () => {
