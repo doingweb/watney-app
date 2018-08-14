@@ -34,4 +34,10 @@ describe('when constructing', () => {
   it('should set the logger source to the plugin ID', () => {
     expect(plugin.logger.sourceName).toBe(WatneyPlugin.id);
   });
+
+  it('should create an empty config if none was passed', () => {
+    plugin = new WatneyPlugin();
+
+    expect(plugin.config).toBeInstanceOf(Object);
+  });
 });
