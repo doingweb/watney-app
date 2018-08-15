@@ -2,6 +2,7 @@ Watney
 ======
 
 [![Build Status](https://travis-ci.org/doingweb/watney-app.svg?branch=master)](https://travis-ci.org/doingweb/watney-app)
+[![Greenkeeper badge](https://badges.greenkeeper.io/doingweb/watney-app.svg)](https://greenkeeper.io/)
 
 DIY home automation for the JavaScript enthusiast.
 
