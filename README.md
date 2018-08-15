@@ -1,6 +1,8 @@
 Watney
 ======
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/doingweb/watney-app.svg)](https://greenkeeper.io/)
+
 DIY home automation for the JavaScript enthusiast.
 
 Getting Started
