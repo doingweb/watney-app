@@ -33,7 +33,7 @@ const selectPlugin = {
     });
 
     if (!returnToMenu) {
-      return;
+      process.exit();
     }
   }
 })();

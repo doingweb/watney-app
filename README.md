@@ -143,6 +143,12 @@ example:
 
 This configures the `example` plugin to have a setting `fruit` with value `banana`. The config object for each plugin is passed to it during object construction.
 
+### Plugin Databases
+
+Plugins each get their own [LokiJS](https://github.com/techfort/LokiJS) database, which can be used to store important non-static information such as renewable authorization tokens. They live in the `.plugin-db` directory (which will be automatically created) at the root of your Watney project.
+
+Since plugins may store sensitive information, it is recommended that you have your source control ignore the `.plugin-db` directory.
+
 ### Building a Plugin
 
 See [`watney-plugin-example`](https://www.npmjs.com/package/watney-plugin-example) for example plugin code.
