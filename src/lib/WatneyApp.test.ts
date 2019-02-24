@@ -1,59 +1,52 @@
-const Logger = require('../../lib/Logger');
+// tslint:disable:max-classes-per-file
+import * as config from 'config';
+import { Logger } from './Logger';
+import { PluginCommandLineInterface } from './PluginCommandLineInterface';
+import { PluginConfig } from './PluginConfig';
+import { WatneyApp } from './WatneyApp';
+import { WatneyPlugin } from './WatneyPlugin';
+import { WatneyScript } from './WatneyScript';
 
-let mockConfig, WatneyApp, app;
+jest.mock('./Logger');
 
-beforeAll(() => {
-  mockConfig = new Map();
-  jest.mock('config', () => mockConfig);
+let app: WatneyApp;
 
-  WatneyApp = require('../../lib/WatneyApp');
-});
-
-afterEach(() => {
-  mockConfig.clear();
+beforeEach(() => {
+  ((config as unknown) as Map<any, any>).clear();
 });
 
 describe('when constructing', () => {
-  it('should create a logger', () => {
-    app = new WatneyApp();
+  it('should create a logger for "watney-app"', () => {
+    app = new WatneyApp({});
 
-    expect(app.logger).toBeInstanceOf(Logger);
-  });
-
-  it('should set the logger source to "watney-app"', () => {
-    app = new WatneyApp();
-
-    expect(app.logger.sourceName).toBe('watney-app');
-  });
-
-  it('should use the config from the config package', () => {
-    app = new WatneyApp();
-
-    expect(app.config).toBe(mockConfig);
+    expect(Logger).toHaveBeenCalledWith('watney-app');
   });
 
   describe('plugins', () => {
-    class Plugin {
-      constructor(config) {
-        this.config = config;
+    class Plugin implements WatneyPlugin {
+      public cli: PluginCommandLineInterface = new PluginCommandLineInterface();
+      public config: PluginConfig;
+
+      constructor(c: PluginConfig) {
+        this.config = c;
+      }
+
+      public async init() {
+        return;
       }
     }
 
     class Plugin1 extends Plugin {
-      static get id() {
-        return 'plugin-1';
-      }
+      public static readonly id = 'plugin-1';
     }
 
     class Plugin2 extends Plugin {
-      static get id() {
-        return 'plugin-2';
-      }
+      public static readonly id = 'plugin-2';
     }
 
     beforeEach(() => {
-      mockConfig.set('plugin-1', 'config-1');
-      mockConfig.set('plugin-2', 'config-2');
+      ((config as unknown) as Map<string, string>).set('plugin-1', 'config-1');
+      ((config as unknown) as Map<string, string>).set('plugin-2', 'config-2');
 
       app = new WatneyApp({ plugins: [Plugin1, Plugin2] });
     });
@@ -74,22 +67,24 @@ describe('when constructing', () => {
     it('should construct the plugins with the corresponding configs', () => {
       const [plugin1, plugin2] = Array.from(app.plugins.values());
 
-      expect(plugin1.config).toBe('config-1');
-      expect(plugin2.config).toBe('config-2');
+      expect((plugin1 as Plugin1).config).toBe('config-1');
+      expect((plugin2 as Plugin2).config).toBe('config-2');
     });
   });
 
   describe('scripts', () => {
-    class Script1 {
-      static get id() {
-        return 'script-1';
+    class Script implements WatneyScript {
+      public async run() {
+        return;
       }
     }
 
-    class Script2 {
-      static get id() {
-        return 'script-2';
-      }
+    class Script1 extends Script {
+      public static readonly id = 'script-1';
+    }
+
+    class Script2 extends Script {
+      public static readonly id = 'script-2';
     }
 
     beforeEach(() => {
@@ -115,25 +110,25 @@ describe('when starting the app', () => {
   it('should initialize plugins before running scripts', async () => {
     let pluginsInitialized = 0;
 
-    class Plugin {
-      async init() {
+    class Plugin implements WatneyPlugin {
+      public cli: PluginCommandLineInterface = new PluginCommandLineInterface();
+
+      public async init() {
         await new Promise(resolve => setTimeout(resolve));
         pluginsInitialized++;
       }
     }
     class Plugin1 extends Plugin {
-      static get id() {
-        return 1;
-      }
+      public static readonly id = '1';
     }
     class Plugin2 extends Plugin {
-      static get id() {
-        return 2;
-      }
+      public static readonly id = '2';
     }
 
-    class Script {
-      run() {
+    class Script implements WatneyScript {
+      public static readonly id = 'id';
+
+      public async run() {
         if (pluginsInitialized < 2) {
           throw new Error('Plugins must be initialized first.');
         }
@@ -151,13 +146,16 @@ describe('when starting the app', () => {
   });
 
   it('should pass the app to the scripts', async () => {
-    let run = jest.fn();
-    let Script = jest.fn().mockImplementation(() => ({ run }));
+    const mockRun = jest.fn();
+    class Script implements WatneyScript {
+      public static readonly id: string = 'id';
+      public run = mockRun;
+    }
 
     app = new WatneyApp({ scripts: [Script] });
 
     await app.start();
 
-    expect(run).toHaveBeenCalledWith(app);
+    expect(mockRun).toHaveBeenCalledWith(app);
   });
 });

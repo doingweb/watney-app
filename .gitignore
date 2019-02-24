@@ -30,3 +30,5 @@ jspm_packages/
 # dotenv environment variables file
 .env
 
+# TypeScript compiler output
+dist/

@@ -145,7 +145,7 @@ This configures the `example` plugin to have a setting `fruit` with value `banan
 
 ### Plugin Databases
 
-Plugins each get their own [LokiJS](https://github.com/techfort/LokiJS) database, which can be used to store important non-static information such as renewable authorization tokens. They live in the `.plugin-db` directory (which will be automatically created) at the root of your Watney project.
+Plugins each get their own [LevelDB](https://www.npmjs.com/package/level) database, which can be used to store important non-static information such as renewable authorization tokens. They live in the `.plugin-db` directory (which will be automatically created) at the root of your Watney project.
 
 Since plugins may store sensitive information, it is recommended that you have your source control ignore the `.plugin-db` directory.
 
