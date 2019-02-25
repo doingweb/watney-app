@@ -1,29 +1,29 @@
 // tslint:disable:max-classes-per-file
-import * as Loki from 'lokijs';
-import * as mkdirp from 'mkdirp';
-import * as path from 'path';
+import { LevelDbProvider } from './database-providers/LevelDbProvider';
 import { Logger } from './Logger';
 import { PluginCommandLineInterface } from './PluginCommandLineInterface';
 import { PluginConfig } from './PluginConfig';
 import { WatneyPluginBase } from './WatneyPluginBase';
 
+jest.mock('./database-providers/LevelDbProvider');
 jest.mock('./Logger');
 
-beforeEach(() => {
-  ((Loki as unknown) as jest.Mock).mockClear();
-  ((mkdirp as unknown) as jest.Mock).mockClear();
-});
+let plugin: WatneyPluginBase;
 
 class PluginImpl extends WatneyPluginBase {
-  protected static id: string = 'plugin-impl';
+  public static id: string = 'plugin-impl';
   public readonly cli = new PluginCommandLineInterface();
 
   constructor(config?: PluginConfig) {
     super(config);
   }
+
+  public async init() {
+    return;
+  }
 }
 
-describe('when constructing', () => {
+describe('when constructing the plugin', () => {
   it('should save the config', () => {
     const expectedConfig = {};
 
@@ -33,64 +33,48 @@ describe('when constructing', () => {
       }
     }
 
-    const plugin = new TestPlugin(expectedConfig);
+    plugin = new TestPlugin(expectedConfig);
 
-    expect(plugin.configValue).toBe(expectedConfig);
+    expect((plugin as TestPlugin).configValue).toBe(expectedConfig);
   });
 
-  it('should construct the logger with the plugin ID', () => {
-    // tslint:disable-next-line:no-unused-expression
-    new PluginImpl();
-
-    expect(Logger).toHaveBeenCalledWith('plugin-impl');
-  });
-});
-
-describe('database getter', () => {
-  class TestPlugin extends PluginImpl {
-    get dbValue() {
-      return this.db;
+  describe('a LevelDB database', () => {
+    class TestPlugin extends PluginImpl {
+      get dbValue() {
+        return this.db;
+      }
     }
-  }
 
-  let plugin: TestPlugin;
+    it('should be set up for the plugin', () => {
+      plugin = new TestPlugin();
 
-  beforeEach(() => {
-    plugin = new TestPlugin();
+      expect((plugin as TestPlugin).dbValue).toBeInstanceOf(LevelDbProvider);
+    });
+
+    it('should be constructed with the plugin ID', () => {
+      plugin = new TestPlugin();
+
+      expect(LevelDbProvider).toHaveBeenCalledWith(TestPlugin.id);
+    });
   });
 
-  it('should ensure the database directory has been created', async () => {
-    process.cwd = jest.fn(() => 'expected-cwd');
+  describe('a logger', () => {
+    class TestPlugin extends PluginImpl {
+      get loggerValue() {
+        return this.logger;
+      }
+    }
 
-    await plugin.dbValue;
+    it('should be set up for the plugin', () => {
+      plugin = new TestPlugin();
 
-    expect(((mkdirp as unknown) as jest.Mock).mock.calls).toHaveLength(1);
-    expect(((mkdirp as unknown) as jest.Mock).mock.calls[0][0]).toBe(
-      `expected-cwd${path.sep}.plugin-db`
-    );
-  });
+      expect((plugin as TestPlugin).loggerValue).toBeInstanceOf(Logger);
+    });
 
-  it('should create/load the database with the correct path and settings', async () => {
-    process.cwd = jest.fn(() => 'expected-cwd');
+    it('should be constructed with the plugin ID', () => {
+      plugin = new TestPlugin();
 
-    const result = await plugin.dbValue;
-
-    expect(result).toBeInstanceOf(Loki);
-    expect(((Loki as unknown) as jest.Mock).mock.calls[0][0]).toBe(
-      `expected-cwd${path.sep}.plugin-db${path.sep}plugin-impl.db`
-    );
-    expect(((Loki as unknown) as jest.Mock).mock.calls[0][1].autoload).toBe(
-      true
-    );
-    expect(((Loki as unknown) as jest.Mock).mock.calls[0][1].autosave).toBe(
-      true
-    );
-  });
-
-  it('should memoize the database', async () => {
-    await plugin.dbValue;
-    await plugin.dbValue;
-
-    expect(((Loki as unknown) as jest.Mock).mock.calls).toHaveLength(1);
+      expect(Logger).toHaveBeenCalledWith(TestPlugin.id);
+    });
   });
 });
