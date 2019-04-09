@@ -44,9 +44,11 @@ Now we can run our new Watney app!
 ```console
 $ npm start
 
-> my-watney-home@1.0.0 start ~/projects/my-watney-home
+> watney-app-example@1.0.0 start /home/chris/Code/watney-app-example
 > node server.js
 
+WARNING: No configurations found in configuration directory:/home/chris/Code/watney-app-example/config
+WARNING: To disable this warning set SUPPRESS_NO_CONFIG_WARNING in the environment.
 [watney-app] It's good to be home.
 [watney-app] Starting up!
 [watney-app] No plugins configured.
@@ -54,17 +56,19 @@ $ npm start
 $
 ```
 
+Note: To remove the warnings, create a [node-config configuration file](https://github.com/lorenwest/node-config/wiki/Configuration-Files) with some arbitrary content (e.g., a `./config/local.yaml` containing `test: true`)
+
 Not a whole lot going on yet. Let's add some of our own code!
 
 Scripts
 -------
 
-Watney scripts are the pieces of automation that you design and write for your own home. They are implemented as classes that extend `WatneyScript`:
+Watney scripts are the pieces of automation that you design and write for your own home. They are implemented as classes that extend `WatneyScriptBase`:
 
 ```js
-const { WatneyScript } = require('watney-app');
+const { WatneyScriptBase } = require('watney-app');
 
-module.exports = class ExampleScript extends WatneyScript {
+module.exports = class ExampleScript extends WatneyScriptBase {
   static get id() {
     return 'example-script';
   }
@@ -96,7 +100,7 @@ Now when we start up the app, the script is run after the plugins have been init
 ```console
 $ npm start
 
-> my-watney-home@1.0.0 start ~/projects/my-watney-home
+> watney-app-example@1.0.0 start /home/chris/Code/watney-app-example
 > node server.js
 
 [watney-app] It's good to be home.

@@ -1,3 +1,5 @@
+import { WatneyApp } from './WatneyApp';
+
 // tslint:disable:no-console
 export class PluginCommandLineInterface {
   private behavior: CliFunction | undefined;
@@ -6,13 +8,13 @@ export class PluginCommandLineInterface {
     this.behavior = behavior;
   }
 
-  public async run() {
+  public async run(app: WatneyApp) {
     if (this.behavior) {
-      await this.behavior();
+      await this.behavior(app);
     } else {
       console.log('Sorry, no CLI is defined for this plugin.');
     }
   }
 }
 
-type CliFunction = () => Promise<void>;
+type CliFunction = (app: WatneyApp) => Promise<void>;

@@ -1,35 +1,44 @@
 #!/usr/bin/env node
+// tslint:disable:no-console
 
-const inquirer = require('inquirer');
+import * as inquirer from 'inquirer';
 
-const path = require('path');
-const app = require(path.join(process.cwd(), 'app'));
-
-const pluginKeys = Array.from(app.plugins.keys());
-
-const selectPlugin = {
-  name: 'pluginId',
-  message: 'Run command-line interface for plugin',
-  type: 'list',
-  choices: [...pluginKeys, new inquirer.Separator(), 'Exit']
-};
+import * as path from 'path';
+import { WatneyApp } from '../lib/WatneyApp';
 
 (async function main() {
+  const app = (await import(path.join(process.cwd(), 'app'))) as WatneyApp;
+  const pluginKeys = Array.from(app.plugins.keys());
+
+  const selectPlugin = {
+    choices: [...pluginKeys, new inquirer.Separator(), 'Exit'],
+    message: 'Run command-line interface for plugin',
+    name: 'pluginId',
+    type: 'list'
+  };
+
   while (true) {
-    let { pluginId } = await inquirer.prompt(selectPlugin);
+    const { pluginId } = await inquirer.prompt<{ pluginId: string }>(
+      selectPlugin
+    );
 
     if (pluginId === 'Exit') {
       return;
     }
 
-    let plugin = app.plugins.get(pluginId);
-    await plugin.constructor.cli(app);
+    const plugin = app.plugins.get(pluginId);
+    if (!plugin) {
+      console.log(`Huh. Plugin "${pluginId}" not found... Starting over.`);
+      continue;
+    }
 
-    let { returnToMenu } = await inquirer.prompt({
-      name: 'returnToMenu',
-      type: 'confirm',
+    await plugin.cli.run(app);
+
+    const { returnToMenu } = await inquirer.prompt<{ returnToMenu: boolean }>({
+      default: true,
       message: 'Return to plugins menu?',
-      default: true
+      name: 'returnToMenu',
+      type: 'confirm'
     });
 
     if (!returnToMenu) {
