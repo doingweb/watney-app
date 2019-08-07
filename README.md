@@ -26,17 +26,31 @@ Next, create an `app.js` file that exports your constructed app:
 ```js
 const { WatneyApp } = require('watney-app');
 
-module.exports = new WatneyApp({});
+module.exports.default = new WatneyApp({});
 ```
+
+Note that we export it as `default` so that it's compatible with ES modules.
 
 By putting this into its own module, we've made our app configuration portable, making it usable by other parts of the system, such as the CLI (more on that later).
 
-Finally, create a `server.js` file, which will be the module responsible for starting up the app:
+Now create a `server.js` file, which will be the module responsible for starting up the app:
 
 ```js
 const app = require('./app');
 
 app.start();
+```
+
+Finally, add a block to your `package.json` to hold some important metadata:
+
+```json
+{
+  // [...]
+  "watney": {
+    "app": "dist/app.js"
+  },
+  // [...]
+}
 ```
 
 Now we can run our new Watney app!
@@ -149,9 +163,9 @@ This configures the `example` plugin to have a setting `fruit` with value `banan
 
 ### Plugin Databases
 
-Plugins each get their own [LevelDB](https://www.npmjs.com/package/level) database, which can be used to store important non-static information such as renewable authorization tokens. They live in the `.plugin-db` directory (which will be automatically created) at the root of your Watney project.
+Plugins each get their own [LevelDB](https://www.npmjs.com/package/level) database, which can be used to store important non-static information such as renewable authorization tokens. They live in the `.databases` directory (which you will need to create, currently) at the root of your Watney project.
 
-Since plugins may store sensitive information, it is recommended that you have your source control ignore the `.plugin-db` directory.
+Since plugins may store sensitive information, it is recommended that you have your source control ignore the `.databases` directory.
 
 ### Building a Plugin
 
@@ -176,3 +190,12 @@ The work of initializing a plugin should happen in `init()`. For example, enumer
 #### Provide a command-line interface
 
 Overriding `cli` with an awaitable function will add the plugin to the app CLI's list, making it accessible from that central command.
+
+TODO
+----
+
+- [ ] Fix [security issues](https://github.com/doingweb/watney-app/network/alerts)
+- [ ] Update `README.md` and `docs/getting-started-typescript.md`.
+- [ ] Should we add an `isConfigured()` method (or some other validation) on plugins, to signal whether or not it has been configured correctly?
+- [ ] TODOs → tickets
+- [ ] Automatically create the `.databases` directory
