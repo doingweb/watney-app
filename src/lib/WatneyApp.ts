@@ -1,6 +1,7 @@
 import * as config from 'config';
 import { AppInitializer } from './AppInitializer';
 import { Logger } from './Logger';
+import { PluginConfig } from './PluginConfig';
 import { WatneyPlugin } from './WatneyPlugin';
 import { WatneyScript } from './WatneyScript';
 
@@ -19,7 +20,9 @@ export class WatneyApp {
 
     this.plugins = new Map();
     for (const Plugin of initializer.plugins || []) {
-      const pluginConfig = this.config.get(Plugin.id);
+      const pluginConfig = this.config.has(Plugin.id)
+        ? this.config.get<PluginConfig>(Plugin.id)
+        : {};
       this.plugins.set(Plugin.id, new Plugin(pluginConfig));
     }
 
