@@ -3,11 +3,16 @@
 
 import * as inquirer from 'inquirer';
 
+import * as fs from 'fs';
 import * as path from 'path';
+
 import { WatneyApp } from '../lib/WatneyApp';
 
 (async function main() {
-  const app = (await import(path.join(process.cwd(), 'app'))) as WatneyApp;
+  const appModulePath = await getAppModulePath();
+
+  const app = (await import(appModulePath)).default as WatneyApp;
+
   const pluginKeys = Array.from(app.plugins.keys());
 
   const selectPlugin = {
@@ -46,3 +51,20 @@ import { WatneyApp } from '../lib/WatneyApp';
     }
   }
 })();
+
+async function getAppModulePath() {
+  try {
+    const appRoot = process.cwd();
+    const appPackageFilePath = path.join(appRoot, 'package.json');
+    const appPackageFile = await fs.promises.readFile(
+      appPackageFilePath,
+      'utf8'
+    );
+    const appPackageData = await JSON.parse(appPackageFile);
+    return path.join(appRoot, appPackageData.watney.app);
+  } catch {
+    throw new Error(
+      'Unable to get the app module path. Make sure the `watney` block is properly configured in package.json.'
+    );
+  }
+}
