@@ -12,7 +12,7 @@ export class LevelDbProvider implements PluginDatabase {
       `${ownerId}.leveldb`
     );
 
-    this.levelDb = new level(dbPath);
+    this.levelDb = level(dbPath);
   }
 
   public async set<T>(key: string, value: T) {
